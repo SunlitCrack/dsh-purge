@@ -296,6 +296,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"ph.id": "id",
 			"ph.alias": "名称",
 			"ph.alias.short": "名称",
+			"ph.target": "目标文件",
 			"btn.create": "新建",
 			"need.id": "需要 id",
 			"ph.content": "",
@@ -349,7 +350,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"group.code": "代码",
 			"group.engine": "引擎",
 			"group.tools": "工具",
-			"group.compat": "0.1.5 兼容",
+			"group.compat": "兼容",
 			"group.dsh20": "0.2.0",
 			"patch.1": "全局免责 → 强指令",
 			"patch.2": "替换式免责 → 强指令",
@@ -636,6 +637,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"ph.id": "id",
 			"ph.alias": "Name",
 			"ph.alias.short": "Name",
+			"ph.target": "Target file",
 			"btn.create": "New",
 			"need.id": "id required",
 			"ph.content": "",
@@ -689,7 +691,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"group.code": "Code",
 			"group.engine": "Engine",
 			"group.tools": "Tools",
-			"group.compat": "0.1.5 compat",
+			"group.compat": "Compat",
 			"group.dsh20": "0.2.0",
 			"patch.1": "Global disclaimer → mandate",
 			"patch.2": "Replacement disclaimer → mandate",
@@ -865,6 +867,19 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 .dshp-cr-num{width:64px;min-width:64px;height:28px;padding:0 8px}
 .dshp-cr-text{width:120px;min-width:88px;height:28px;padding:0 8px}
 .dshp-ver{width:100%;min-width:0;max-width:none;height:32px;padding:0 10px;font-size:12px}
+.dshp-ver-wrap{position:relative;flex:1 1 auto;min-width:0}
+.dshp-ver-wrap>.dshp-ver{display:flex;align-items:center;justify-content:space-between;gap:6px;text-align:left;cursor:pointer}
+.dshp-ver-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dshp-ver-caret{flex:0 0 auto;opacity:.6;font-size:10px;line-height:1}
+.dshp-ver-menu{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:40;max-height:216px;overflow:auto;padding:4px;border:1px solid rgba(0,0,0,.18);border-radius:8px;background:#fff;color:#16140f;box-shadow:0 12px 32px rgba(0,0,0,.32)}
+.dshp-dock[data-theme="dusk"] .dshp-ver-menu{background:#1b1d22;color:#f4f1ea;border-color:#5a5e68}
+.dshp-dock[data-theme="white"] .dshp-ver-item:hover{background:rgba(22,20,15,.08)}
+.dshp-dock[data-theme="dusk"] .dshp-ver-item:hover{background:rgba(244,241,234,.12)}
+.dshp-dock[data-theme="white"] .dshp-ver-item.is-on{background:rgba(22,20,15,.07)}
+.dshp-dock[data-theme="dusk"] .dshp-ver-item.is-on{background:rgba(244,241,234,.10)}
+.dshp-ver-item{display:block;width:100%;padding:6px 8px;border:0;border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:12px;text-align:left;cursor:pointer}
+.dshp-ver-item:hover{background:var(--dshp-hover,color-mix(in srgb,var(--dsw-alias-bg-layer-2,rgba(127,127,127,.18)) 60%,transparent))}
+.dshp-ver-item.is-on{font-weight:600}
 .dshp-rel{margin:0 0 14px}
 .dshp-now{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 4px}
 .dshp-now-label{font-family:var(--dshp-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dshp-mute)}
@@ -877,7 +892,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 .dshp-edition:not(.is-on) .dshp-edition-name{color:var(--dshp-mute)}
 .dshp-edition .dshp-btn{min-width:118px}
 .dshp-rel .dshp-notice{display:block;margin-top:8px;min-height:16px}
-@media (max-width:560px){.dshp-edition{grid-template-columns:1fr auto;grid-template-areas:"name btn" "sel sel"}.dshp-edition-name{grid-area:name}.dshp-edition .dshp-ver{grid-area:sel}.dshp-edition .dshp-btn{grid-area:btn}}
+@media (max-width:560px){.dshp-edition{grid-template-columns:1fr auto;grid-template-areas:"name btn" "sel sel"}.dshp-edition-name{grid-area:name}.dshp-edition .dshp-ver,.dshp-edition .dshp-ver-wrap{grid-area:sel}.dshp-edition .dshp-btn{grid-area:btn}}
 .dshp-area{min-height:220px;resize:vertical}
 .dshp-field:focus,.dshp-area:focus{outline:none;border-color:var(--dshp-accent);box-shadow:0 0 0 3px var(--dshp-accent-soft)}
 .dshp-field:disabled,.dshp-area:disabled{opacity:.5}
@@ -1100,6 +1115,7 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 			"代码": "code",
 			"工具": "tools",
 			"0.1.5 兼容": "compat",
+			"兼容": "compat",
 			"0.2.0 兼容": "dsh20",
 		};
 		const GROUP_ORDER = ["prompt", "code", "tools", "compat", "dsh20"];
@@ -1883,20 +1899,15 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 						t("channel." + id),
 						onLane ? h("em", { className: "dshp-now-mark" }, t("update.current")) : null,
 					),
-					h("select", {
-						className: "dshp-field dshp-ver",
+					h(VersionPicker, {
 						value: list.length ? ((hit && hit.ref) || "") : "",
 						disabled: updateBusy || !list.length,
-						onChange: (e) => setPick((prev) => Object.assign({}, prev, { [id]: e.target.value })),
-						"aria-label": t("update.pick"),
-					},
-						list.length
-							? list.map((item) => h("option", {
-								key: item.ref + (item.sha || ""),
-								value: item.ref,
-							}, versionChoiceLabel(item, t)))
-							: h("option", { value: "" }, noBeta ? t("update.noBeta") : t("update.pick")),
-					),
+						items: list.length
+							? list.map((item) => ({ value: item.ref, label: versionChoiceLabel(item, t) }))
+							: [{ value: "", label: noBeta ? t("update.noBeta") : t("update.pick") }],
+						label: t("update.pick"),
+						onChange: (v) => setPick((prev) => Object.assign({}, prev, { [id]: v })),
+					}),
 					h(Btn, { tiny: true, kind: actionKind, disabled: actionDisabled, onClick: actionClick }, actionLabel),
 				);
 			};
@@ -2200,13 +2211,15 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 				h("div", { className: "dshp-block" },
 					h("div", { className: "dshp-policy-row" },
 						h("label", { htmlFor: "dshp-policy-select" }, t("policy.title")),
-						h("select", {
-							id: "dshp-policy-select",
-							className: "dshp-field",
-							value: policyValue,
-							disabled: busy || !st,
-							onChange: (e) => doPost("set-policy", { policy: e.target.value }),
-						}, policyOptions.map((p) => h("option", { key: p, value: p }, t("policy." + p)))),
+				h(VersionPicker, {
+					id: "dshp-policy-select",
+					value: policyValue,
+					disabled: busy || !st,
+					label: t("policy.title"),
+					style: { width: "220px" },
+					items: policyOptions.map((p) => ({ value: p, label: t("policy." + p) })),
+					onChange: (v) => doPost("set-policy", { policy: v }),
+				}),
 					),
 					h("p", { className: "dshp-block-hint" }, t("policy.hint")),
 				),
@@ -2258,8 +2271,13 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 							h("div", { className: "dshp-create-row" },
 								h("input", { className: "dshp-field", placeholder: t("ph.id"), value: newId, onChange: (e) => setNewId(e.target.value) }),
 								h("input", { className: "dshp-field", placeholder: t("ph.alias"), value: newName, onChange: (e) => setNewName(e.target.value) }),
-								h("select", { className: "dshp-field", style: { minWidth: 120, flex: "0 0 auto" }, value: newTarget, onChange: (e) => setNewTarget(e.target.value) },
-									TARGETS.map((x) => h("option", { key: x, value: x }, x))),
+					h(VersionPicker, {
+						value: newTarget,
+						label: t("ph.target"),
+						style: { minWidth: "120px", flex: "0 0 auto" },
+						items: TARGETS.map((x) => ({ value: x, label: x })),
+						onChange: (v) => setNewTarget(v),
+					}),
 								h(Btn, {
 									kind: "primary",
 									tiny: true,
@@ -2288,10 +2306,13 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 									className: "dshp-field", placeholder: t("ph.alias.short"), value: editName,
 									onChange: (e) => setEditName(e.target.value),
 								}),
-								h("select", {
-									className: "dshp-field", style: { minWidth: 120 }, value: editTarget,
-									onChange: (e) => setEditTarget(e.target.value),
-								}, TARGETS.map((x) => h("option", { key: x, value: x }, x))),
+					h(VersionPicker, {
+						value: editTarget,
+						label: t("ph.target"),
+						style: { minWidth: "120px" },
+						items: TARGETS.map((x) => ({ value: x, label: x })),
+						onChange: (v) => setEditTarget(v),
+					}),
 							),
 							h("textarea", {
 								key: "body",
@@ -2789,6 +2810,56 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 
 		function readTheme() {
 			return detectHostTheme();
+		}
+
+		/** 自绘版本下拉：原生 <select> 的弹层由浏览器进程绘制，面板卸载时不会被带走。 */
+		function VersionPicker(props) {
+			const { items, value, disabled, onChange, label, id, style } = props;
+			const [open, setOpen] = useState(false);
+			const wrapRef = useRef(null);
+			useEffect(() => {
+				if (!open) return undefined;
+				const onDown = (e) => {
+					const el = wrapRef.current;
+					if (el && e.target && el.contains(e.target)) return;
+					setOpen(false);
+				};
+				const onKey = (e) => {
+					if (e.key === "Escape") { e.stopPropagation(); setOpen(false); }
+				};
+				document.addEventListener("mousedown", onDown, true);
+				document.addEventListener("keydown", onKey, true);
+				return () => {
+					document.removeEventListener("mousedown", onDown, true);
+					document.removeEventListener("keydown", onKey, true);
+				};
+			}, [open]);
+			const list = Array.isArray(items) ? items : [];
+			const current = list.find((it) => it.value === value) || list[0];
+			return h("div", { className: "dshp-ver-wrap", ref: wrapRef, style },
+				h("button", {
+					id,
+					type: "button",
+					className: "dshp-field dshp-ver",
+					disabled,
+					"aria-haspopup": "listbox",
+					"aria-expanded": open ? "true" : "false",
+					"aria-label": label,
+					onClick: () => setOpen((v) => !v),
+				},
+					h("span", { className: "dshp-ver-label" }, current ? current.label : label),
+					h("span", { className: "dshp-ver-caret", "aria-hidden": "true" }, "▼"),
+				),
+				open ? h("div", { className: "dshp-ver-menu", role: "listbox" },
+					list.map((it) => h("button", {
+						key: it.value,
+						type: "button",
+						role: "option",
+						"aria-selected": it.value === value ? "true" : "false",
+						className: "dshp-ver-item" + (it.value === value ? " is-on" : ""),
+						onClick: () => { setOpen(false); if (it.value !== value) onChange(it.value); },
+					}, it.label))) : null,
+			);
 		}
 
 		function SettingsRoot(props) {
@@ -7761,9 +7832,30 @@ body[data-ds-dark-theme] .dshp-rewind-item span{color:var(--dsw-alias-label-tert
 				});
 		}
 
+		// 原生 <select> 的弹层由浏览器自己绘制，而面板只是用 data-open 隐藏、并不卸载；
+		// 关面板前必须先把仍聚焦的 select 失焦，否则弹层会留在页面上（Chromium/Electron）。
+		let lastNativeSelect = null;
+		try {
+			if (typeof document !== "undefined" && document.addEventListener) {
+				document.addEventListener("focusin", (e) => {
+					const el = e && e.target;
+					const tag = el && el.tagName ? String(el.tagName).toLowerCase() : "";
+					if (tag === "select") lastNativeSelect = el;
+				}, true);
+			}
+		} catch { /* 非浏览器环境直接跳过 */ }
+		function dismissNativeSelectPopup() {
+			try { if (lastNativeSelect && typeof lastNativeSelect.blur === "function") lastNativeSelect.blur(); } catch { /* ignore */ }
+			try {
+				const active = typeof document !== "undefined" ? document.activeElement : null;
+				if (active && active.tagName && String(active.tagName).toLowerCase() === "select" && typeof active.blur === "function") active.blur();
+			} catch { /* ignore */ }
+			lastNativeSelect = null;
+		}
 		let dockBus = { open: false, tab: "clean", authOpen: false, pending: "tab", listeners: new Set() };
 		function getDock() { return dockBus; }
 		function setDock(patch) {
+			if (patch && patch.open === false && dockBus.open) dismissNativeSelectPopup();
 			dockBus = Object.assign({}, dockBus, patch);
 			dockBus.listeners.forEach((fn) => { try { fn(dockBus); } catch { /* ignore */ } });
 		}
@@ -8393,6 +8485,10 @@ body[data-ds-dark-theme] .dshp-rewind-item span{color:var(--dsw-alias-label-tert
 					try { __dshPurgeDrill.setUI({ open: true }); } catch { /* ignore */ }
 				}
 			}, [st.tab, st.open]);
+			// 收起时直接卸载整个面板：data-open 只做 CSS 隐藏时，原生 <select> 已弹出的
+			// 列表不会随之关闭，会留在页面最上层（Chromium/Electron on Windows）。
+			if (!st.open) return null;
+
 			const onTab = (id) => {
 				if (id === "drill") { requestDrill("tab"); return; }
 				setDock({ tab: "clean", authOpen: false, pending: "tab" });
@@ -8494,12 +8590,12 @@ body[data-ds-dark-theme] .dshp-rewind-item span{color:var(--dsw-alias-label-tert
 				},
 			},
 				h("div", { className: "dshp-dock-head", onMouseDown: startDrag, title: "按住拖动面板" },
-					h("b", null, "dsh-purge"),
+					h("b", null, "dsh-purge · local4"),
 					h("span", { style: { flex: 1 } }),
 					st.tab === "drill" && readDrillAuth()
 						? h("button", { type: "button", onClick: () => requestDrill("full") }, t("dock.full"))
 						: null,
-					h("button", { type: "button", onClick: () => setDock({ open: false, authOpen: false, tab: "clean", pending: "tab" }) }, t("dock.close")),
+					h("button", { type: "button", onMouseDown: dismissNativeSelectPopup, onClick: () => setDock({ open: false, authOpen: false, tab: "clean", pending: "tab" }) }, t("dock.close")),
 				),
 				h("div", { className: "dshp-dock-tabs", role: "tablist" },
 					h("button", {
