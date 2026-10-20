@@ -1,3 +1,19 @@
+# 1.1.72-dsh021.2
+
+## 中文
+
+- 版本 **1.1.72-dsh021.2**。
+- 修复 0.2.1-rc.2 下「红队模式」在模式下拉里显示**加载失败**：预设里的 `toolFilter` 已不再被 `@deepseek-ai/dsh-tool-subagent` 接受，`apply()` 见到这个字段直接抛错，`agentPresets.register()` 的挂载审计把整份预设标 broken。
+- 包内模板删掉 `toolFilter.deny`；`installPreset` 增加自愈，已有用户预设里残留的 `toolFilter` / `persona` 会被就地剥掉（其余内容逐字保留），不必手工改文件、也不必 `REDTEAM_PRESET_REFRESH=1` 整份覆盖。
+- 叶子节点约束改由 `maxDepth: 1` 承担：子智能体再调 `subagent` 会被运行时按委派深度直接拒绝。`subagent_fork` / `workflow` / `ralph` 不再被从子会话工具目录里摘掉——要恢复严格裁剪，得另建一个叶子预设并用 `agentPreset` 指定（0.2.1 推荐的路径）。
+
+## English
+
+- **1.1.72-dsh021.2**.
+- Fix the redteam preset showing **Failed to load** in the mode dropdown on 0.2.1-rc.2: `@deepseek-ai/dsh-tool-subagent` no longer accepts `toolFilter` and throws from `apply()`, so the mount audit marks the whole preset broken.
+- Drop `toolFilter.deny` from the bundled template, and make `installPreset` self-heal: a `toolFilter` / `persona` left in an existing user preset is stripped in place, everything else preserved. No hand editing, no full overwrite via `REDTEAM_PRESET_REFRESH=1`.
+- The leaf invariant now rests on `maxDepth: 1`: a child that calls `subagent` again is rejected by the runtime on delegation depth. `subagent_fork` / `workflow` / `ralph` are no longer removed from the child tool catalog — strict trimming now requires a separate leaf preset selected with `agentPreset`, the path 0.2.1 recommends.
+
 # 1.1.71
 
 ## 中文
